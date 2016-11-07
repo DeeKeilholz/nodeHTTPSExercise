@@ -1,31 +1,26 @@
-// while https is built-in to Node, it is a module, so it must be required
-var https = require('https');
+var http = require("http");
 
-// the host can be thought of as the domain name you want to read from,
-// and the path is the resource - '/' is the root path, but if you wanted to read a
-// particular resource (like '/login/index.html'), that would be defined in the path
+var requestOptions = {
+  host: 'sytantris.github.io',
+  path: '/http-examples/step1.html'
+};
 
-
-  var requestOptions = {
-    host: 'sytantris.github.io',
-    path: '/http-examples/step1.html'
-  };
-// code goes here
-
-
-
-// called by https when the request is made.
-var callback = function(response) {
-  console.log('In response handler callback!');
-
-  response.on('data', function(chunk) {
-    console.log('[-- CHUNK OF LENGTH ' + chunk.length + ' --]');
-    console.log(chunk.toString());
-  });
+function getAndPrintHTML(data) {
+  console.log(data);
 }
 
-console.log("I'm about to make the request!");
+function readHTML(site, callback) {
+http.get(site, (response) => {    // HTTP Response Callback
 
-https.request(requestOptions, callback).end();
+  response.setEncoding("utf8");             // Use UTF-8 encoding
 
-console.log("I've made the request!");
+  response.on("data", callback)
+
+  response.on("end", function() {                // On Data Completed
+    console.log("Response stream complete.");
+  });
+
+});
+};
+
+readHTML(requestOptions, getAndPrintHTML);
